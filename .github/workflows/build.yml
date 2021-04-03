@@ -1,0 +1,25 @@
+name: PressiveSkyblock - Build
+on:
+  pull_request:
+
+jobs:
+  Maven:
+    name: Maven
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [8, 11]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK/Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Cache Maven Packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ubuntu-latest-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-latest-m2
+      - name: Build
+        run: mvn clean package
